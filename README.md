@@ -3,11 +3,11 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=180&section=header&text=AsumaMD&fontSize=72&fontColor=fff&animation=twinkling&fontAlignY=32&desc=Asuma%20Multi%20Device%20WhatsApp%20Bot&descAlignY=55&descAlign=50" />
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Node.js-%3E%3D20-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
+  <img src="https://img.shields.io/badge/Node.js-%3E%3D18-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" />
   <img src="https://img.shields.io/badge/Bun-%3E%3D1.0-fbf0df?style=for-the-badge&logo=bun&logoColor=black" />
-  <img src="https://img.shields.io/badge/Baileys-Latest-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" />
+  <img src="https://img.shields.io/badge/Baileys-v7%20RC13-25D366?style=for-the-badge&logo=whatsapp&logoColor=white" />
   <img src="https://img.shields.io/badge/ESM-Pure%20Module-f7df1e?style=for-the-badge&logo=javascript&logoColor=black" />
-  <img src="https://img.shields.io/badge/License-MIT-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/License-CC%20BY--NC%204.0-blue?style=for-the-badge" />
 </p>
 
 <p align="center">
@@ -23,56 +23,49 @@
 
 | Fitur | Deskripsi |
 |-------|-----------|
-| ⚡ **Pure ESM** | Seluruh codebase menggunakan ES Modules native — tidak ada `.mjs`, tidak ada CommonJS |
-| 🔌 **Hybrid Plugin System** | Plugin support format CJS, ESM, dan ekspor modern dalam satu loader |
-| 🔄 **Auto-Reload Plugin** | Plugin di-watch secara realtime menggunakan `chokidar` — edit tanpa restart |
-| 📱 **Pairing Code + QR** | Koneksi via Pairing Code (nomor HP) atau QR Code sesuai pilihan |
+| ⚡ **Pure ESM** | Seluruh codebase menggunakan ES Modules native — modern & future-proof |
+| 🔌 **Universal Plugin System** | Support plugin CJS (`.cjs`) dan ESM (`.mjs` / `.js`) dalam satu loader |
+| 📂 **Subfolder Support** | Plugin bisa diorganisir dalam subfolder (group/, owner/, general/, dll) |
+| 📱 **Pairing Code** | Koneksi via Pairing Code (nomor HP) — lebih mudah dari scan QR |
 | 🛠️ **Dynamic Case System** | Tambah/hapus command case langsung dari chat WhatsApp (khusus Owner) |
-| 🧩 **Modular Architecture** | Struktur folder bersih: `core/`, `handler/`, `lib/`, `plugins/`, `commands/` |
-| 🌍 **Env-based Config** | Konfigurasi via `.env` — aman, fleksibel, dan tidak hardcoded |
+| 🧩 **Modular Architecture** | Struktur folder bersih: `core/`, `lib/`, `plugins/` |
 | 🚀 **Bun-native** | Berjalan secara native di Bun untuk performa lebih cepat |
-| 🔒 **Baileys RC-13+ Ready** | Kompatibel dengan Baileys terbaru termasuk perbaikan sinkronisasi & enkripsi |
-| 📦 **TypeScript Friendly** | JSDoc type hints di seluruh file — IDE-aware tanpa perlu kompilasi |
+| 🔒 **Baileys v7 RC13+** | Kompatibel dengan Baileys terbaru dengan dukungan LID (Local Identifier) |
+| 🎨 **Rich Media Support** | Sticker (image/video/gif), audio, polling, button message, list message |
+| 📊 **SQLite Ready** | Siap menggunakan `bun:sqlite` untuk database (opsional) |
 
 ---
 
 ## 📁 Struktur Folder
 
 ```
-asuma-multi-device/
-├── src/
-│   ├── core/
-│   │   ├── connection.js      # Koneksi Baileys, Auth State, Store
-│   │   ├── store.js           # In-memory message store
-│   │   └── logger.js          # Custom logger (pino-pretty)
-│   ├── handler/
-│   │   ├── message.js         # Handler pesan masuk utama
-│   │   ├── group.js           # Handler event grup
-│   │   └── call.js            # Handler panggilan masuk
-│   ├── lib/
-│   │   ├── serialize.js       # Serialisasi objek pesan Baileys
-│   │   ├── functions.js       # Fungsi helper umum (format, convert, dll)
-│   │   ├── plugin-loader.js   # Loader & watcher plugin (CJS/ESM hybrid)
-│   │   └── case-system.js     # Dynamic case manager
-│   ├── plugins/               # Plugin internal / core commands
-│   │   ├── menu.js
-│   │   └── owner.js
-│   └── commands/              # Command terstruktur alternatif
-│       └── example.js
-├── config/
-│   └── settings.js            # Konfigurasi bot (baca dari .env)
-├── database/
-│   ├── session/               # Auth session Baileys (gitignored)
-│   ├── owner.json             # Data owner & admin
-│   └── premium.json           # Data pengguna premium
-├── plugins/                   # Plugin eksternal buatan pengguna (Auto-Reload)
-│   └── hello.js               # Contoh plugin
-├── index.js                   # Main entry point (bootstrapper)
+
+asuma/
+├── index.js                   # Entry point (koneksi WhatsApp)
+├── config.js                  # Konfigurasi utama bot
+├── Asuma.js                   # Handler pesan utama
 ├── package.json
-├── .env                       # Environment variables (gitignored)
-├── .env.example               # Template environment variables
-├── .gitignore
-└── README.md
+├── database/                  # Data JSON (owner, premium, dll)
+├── session/                   # Auth session (auto-generated)
+├── temp/                      # Temporary files
+└── src/
+├── core/
+│   ├── message.js         # Utilities & helper functions
+│   ├── logger.js          # Custom logger dengan box styling
+│   ├── media.js           # Media handler (download, upload)
+│   └── serialize.js       # Message serializer (LID support)
+├── lib/
+│   ├── handle.js          # Universal plugin loader
+│   ├── case.js            # Dynamic case system
+│   ├── exif.js            # Sticker EXIF metadata
+│   ├── lidConverter.js    # LID ↔ JID converter
+│   └── setup.js           # Bot setup (send methods)
+└── plugins/               # Semua plugin di sini
+├── owner/             # Owner-only commands
+├── group/             # Group commands
+├── general/           # Public commands
+└── media/             # Media/sticker commands
+
 ```
 
 ---
@@ -81,169 +74,212 @@ asuma-multi-device/
 
 ### Prasyarat
 
-- **Node.js** `>= 20.x` atau **Bun** `>= 1.0`
+- **Node.js** `>= 18.x` atau **Bun** `>= 1.0`
 - Git
 
 ### Langkah Instalasi
 
 **1. Clone Repository**
 ```bash
-git clone https://github.com/username/asuma-multi-device.git
-cd asuma-multi-device
+git clone https://github.com/asuma-labs/asuma.git
+cd asuma
 ```
 
-**2. Install Dependencies**
+2. Install Dependencies
 
-Dengan **Bun** (direkomendasikan, lebih cepat):
+Dengan Bun (direkomendasikan, lebih cepat):
+
 ```bash
 bun install
 ```
 
-Dengan **Node.js / npm**:
+Dengan Node.js / npm:
+
 ```bash
 npm install
 ```
 
-**3. Konfigurasi Environment**
-```bash
-cp .env.example .env
-```
-Buka `.env` dan isi sesuai kebutuhan:
-```env
-BOT_NAME=AsumaMD
-OWNER_NUMBER=628xxxxxxxxxx
-PREFIX=.
-USE_PAIRING_CODE=true
-BOT_NUMBER=628xxxxxxxxxx
+3. Konfigurasi Bot
+
+Edit config.js sesuai kebutuhan:
+
+```javascript
+export const config = {
+    prefa: ['', '!', '.', ',', '🐤', '🗿'],  // Prefix yang didukung
+    owner: ['6285162822778', '6287822118865'], // Nomor owner (tanpa @)
+    thumbnail: "https://...",                  // Thumbnail untuk menu
+    name: "Asuma Bot",
+    version: "1.0"
+};
+
+export const init = {
+    session: "./session",      // Folder untuk session
+    customPair: "ASUMA"        // Custom pairing code prefix
+};
 ```
 
-**4. Jalankan Bot**
+4. Jalankan Bot
 
-Dengan **Bun**:
+Dengan Bun:
+
 ```bash
 bun start
 ```
 
-Dengan **Node.js**:
+Dengan Node.js:
+
 ```bash
 npm start
 ```
 
-Dengan **auto-reload** (development):
+Dengan auto-reload (development):
+
 ```bash
 bun dev
 # atau
 npm run dev
 ```
 
-**5. Hubungkan ke WhatsApp**
+5. Hubungkan ke WhatsApp
 
-- Jika `USE_PAIRING_CODE=true`: Masukkan nomor bot saat diminta → masukkan kode yang muncul di terminal ke aplikasi WhatsApp (**Perangkat Tertaut → Tautkan Perangkat → Tautkan dengan nomor telepon**)
-- Jika `USE_PAIRING_CODE=false`: Scan QR Code yang tampil di terminal
+· Masukkan nomor bot saat diminta di terminal
+· Masukkan kode pairing yang muncul ke WhatsApp (Perangkat Tertaut → Tautkan Perangkat → Tautkan dengan nomor telepon)
 
 ---
 
-## 🧩 Cara Membuat Plugin
+🧩 Cara Membuat Plugin
 
-Semua plugin diletakkan di folder `plugins/` (root) dan akan otomatis dimuat & di-watch saat bot berjalan.
+Semua plugin diletakkan di folder src/plugins/. Bisa diorganisir dalam subfolder (group/, owner/, general/, dll).
 
-### Format Plugin ESM (Standar AsumaMD)
+Format Plugin ESM (Rekomendasi)
 
-```js
-// plugins/salam.js
-
-/** @type {import('../src/lib/plugin-loader.js').AsumaPlugin} */
-const handler = async (m, { sock, reply }) => {
-  await reply(`Halo, ${m.pushName}! Selamat datang di AsumaMD 🔥`)
-}
-
-handler.command = ['salam', 'hello', 'hi']
-handler.description = 'Kirim pesan salam'
-handler.category = 'general'
-// handler.owner = true      // Hanya owner
-// handler.group = true      // Hanya di grup
-// handler.private = true    // Hanya di private chat
-
-export default handler
-```
-
-### Format Plugin CommonJS (Legacy Support)
-
-```js
-// plugins/info.js (format CJS tetap didukung)
-
+```javascript
+// src/plugins/general/ping.js
 const handler = async (m, { reply }) => {
-  await reply('AsumaMD v1.0.0 — by Aditia Nugraha')
-}
+    await reply('Pong! 🏓');
+};
 
-handler.command = ['info', 'about']
-handler.description = 'Info tentang bot'
+handler.command = ['ping', 'p'];
+handler.owner = false;    // true = hanya owner
+handler.premium = false;  // true = hanya premium user
+handler.group = false;    // true = hanya di grup
+handler.private = false;  // true = hanya di private chat
 
-module.exports = handler
+export default handler;
+```
+
+Format Plugin CJS (Legacy Support)
+
+```javascript
+// src/plugins/owner/eval.cjs
+const handler = async (m, { reply, text, isOwn }) => {
+    if (!isOwn) return reply('❌ Owner only!');
+    try {
+        const result = eval(text);
+        await reply(require('util').format(result));
+    } catch (err) {
+        await reply(`❌ Error: ${err.message}`);
+    }
+};
+
+handler.command = ['>', 'eval'];
+handler.owner = true;
+
+module.exports = handler;
+```
+
+Contoh Plugin dengan Subfolder
+
+```javascript
+// src/plugins/group/tools/kick.js
+const handler = async (m, { Linger, args, isGroup, isAdmin, botAdmin, reply }) => {
+    if (!isGroup) return reply('❌ Group only!');
+    if (!isAdmin) return reply('❌ You are not admin!');
+    if (!botAdmin) return reply('❌ Bot is not admin!');
+    
+    let users = m.mentionedJid;
+    if (!users.length && args[0]) {
+        users = [args[0].replace(/[^0-9]/g, '') + '@s.whatsapp.net'];
+    }
+    
+    for (let user of users) {
+        await Linger.groupParticipantsUpdate(m.chat, [user], 'remove');
+    }
+    
+    reply(`✅ Successfully kicked ${users.length} user(s)!`);
+};
+
+handler.command = ['kick', 'remove'];
+handler.group = true;
+
+module.exports = handler;
 ```
 
 ---
 
-## 🔄 Migrasi Plugin dari LingerBase
-
-Plugin lama dari LingerBase dapat dimigrasikan dengan mudah:
-
-| LingerBase (Lama) | AsumaMD (Baru) |
-|---|---|
-| `src/plugins/esm/nama.mjs` | `plugins/nama.js` |
-| `src/plugins/cjs/nama.js` | `plugins/nama.js` (langsung kompatibel) |
-| `export default handler` | `export default handler` (sama) |
-| `module.exports = handler` | `module.exports = handler` (masih support) |
-
-**Ubah referensi di plugin lama:**
-```js
-// Lama (LingerBase)
-import { lingerfunc } from '../lib/functions.js'
-
-// Baru (AsumaMD)
-import { asumaFunc } from '../src/lib/functions.js'
-```
-
----
-
-## ⚙️ Dynamic Case System
+🔧 Dynamic Case System
 
 Tambah/hapus command case langsung dari chat WhatsApp (khusus Owner):
 
 ```
 .addcase case "ping": {
-  reply("Pong! Bot AsumaMD aktif ✅");
+  reply("Pong! Bot Asuma aktif ✅");
 }
 break;
 ```
 
 ```
-.listcase    → Lihat semua case yang tersimpan
-.delcase ping → Hapus case "ping"
+.listcase      → Lihat semua case yang tersimpan
+.getcase ping  → Lihat isi case "ping"
+.delcase ping  → Hapus case "ping"
 ```
 
----
-
-## 🛠️ Tech Stack
-
-- **Runtime**: Node.js 20+ / Bun 1.0+
-- **WhatsApp Library**: [@whiskeysockets/baileys](https://github.com/WhiskeySockets/Baileys) (latest)
-- **Module System**: Pure ESM (`"type": "module"`)
-- **Logger**: [pino](https://github.com/pinojs/pino) + pino-pretty
-- **File Watcher**: [chokidar](https://github.com/paulmillr/chokidar)
-- **Media Processing**: fluent-ffmpeg, jimp, sharp, wa-sticker-formatter
+Note: Case system adalah fallback ketika plugin tidak ditemukan. Direkomendasikan menggunakan plugin untuk fitur baru.
 
 ---
 
-## 📜 Lisensi
+📦 Built-in Methods
 
-Dirilis di bawah lisensi **MIT**. Bebas digunakan, dimodifikasi, dan didistribusikan.
+Setelah bot terhubung, objek Ditss (socket) memiliki method tambahan:
+
+Method Deskripsi
+sendText(jid, text, quoted, options) Kirim teks biasa
+sendMedia(jid, path, caption, quoted, options) Kirim image/video/audio/file
+sendImageAsSticker(jid, path, quoted, options) Konversi image ke sticker
+sendVideoAsSticker(jid, path, quoted, options) Konversi video ke sticker
+sendPoll(jid, question, options) Kirim polling
+sendAudio(jid, input, isPtt, quoted) Kirim audio (PTT/non-PTT)
+sendButtons(jid, options) Kirim interactive buttons
+sendListMsg(jid, content, options) Kirim list message
+
+---
+
+🛠️ Tech Stack
+
+Komponen Teknologi
+Runtime Node.js 18+ / Bun 1.0+
+WhatsApp Library @whiskeysockets/baileys v7 RC13
+Module System Pure ESM ("type": "module")
+Logger pino + chalk
+Media Processing fluent-ffmpeg, jimp, sharp, node-webpmux
+HTTP Client axios
+Date/Time moment-timezone
+
+---
+
+📜 Lisensi
+
+Dirilis di bawah lisensi CC BY-NC 4.0 (Creative Commons Attribution-NonCommercial 4.0 International).
+
+· ✅ Boleh: Menggunakan, memodifikasi, dan mendistribusikan
+· ❌ Tidak boleh: Menggunakan untuk tujuan komersial
+· 📝 Wajib: Mencantumkan atribusi kepada pembuat asli (ditss)
 
 ---
 
 <div align="center">
 
-Dibuat dengan ❤️ oleh **ditss**
+Dibuat dengan ❤️ oleh ditss
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=100&section=footer" />
 
