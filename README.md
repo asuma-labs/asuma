@@ -243,7 +243,7 @@ Dirilis di bawah lisensi **MIT**. Bebas digunakan, dimodifikasi, dan didistribus
 
 <div align="center">
 
-Dibuat dengan ❤️ oleh **Aditia Nugraha**
+Dibuat dengan ❤️ oleh **ditss**
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=gradient&customColorList=6,11,20&height=100&section=footer" />
 
