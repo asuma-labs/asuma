@@ -41,7 +41,6 @@ const loadPlugin = async (filePath) => {
             return require(filePath);
         }
 
-        // ESM (.mjs or .js)
         const importPath = pathToFileURL(filePath).href + `?t=${Date.now()}`;
         const imported = await import(importPath);
         return imported.default || imported;
@@ -88,6 +87,7 @@ const loadAllPlugins = async (force = false) => {
 export const clearPluginCache = () => {
     pluginCache = null;
     lastLoadTime = 0;
+    console.log('🔄 Plugin cache cleared!');
 };
 
 export const handleMessage = async (message, commandText, context) => {
@@ -107,7 +107,8 @@ export const handleMessage = async (message, commandText, context) => {
         }
 
         if (!match) continue;
-        if (plugin.owner && !context.isOwn) {
+
+        if (plugin.owner && !context.isOwner) {
             context.reply?.('❌ Owner only!');
             return;
         }
