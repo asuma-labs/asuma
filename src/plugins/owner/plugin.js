@@ -1,4 +1,4 @@
-// src/plugins/owner/pluginManager.mjs
+// src/plugins/owner/plugin.js
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -35,7 +35,7 @@ const ensureDirectoryExists = (dirPath) => {
     }
 };
 
-export default async function pluginManager(m, { args, reply, isOwner }) {
+export default async function pluginManager(m, { args, reply, isOwner, Ditss }) {
     if (!isOwner) return reply("❌ Owner only!");
     
     const sub = args[0]?.toLowerCase();
@@ -58,19 +58,44 @@ export default async function pluginManager(m, { args, reply, isOwner }) {
             reply(listText);
             break;
         
-        case "get":
-            if (!args[1]) return reply("Usage: .plugin get <nomor>");
-            const getIndex = parseInt(args[1], 10) - 1;
-            if (isNaN(getIndex) || getIndex < 0 || getIndex >= plugins.length) return reply("❌ Nomor plugin tidak valid!");
-            
-            const content = fs.readFileSync(plugins[getIndex].fullPath, "utf-8");
-            const maxLength = 4000;
-            if (content.length > maxLength) {
-                await reply(`📄 Isi plugin '${plugins[getIndex].relativePath}':\n\n${content.slice(0, maxLength)}\n\n... (file terlalu panjang, terpotong)`);
-            } else {
-                await reply(`📄 Isi plugin '${plugins[getIndex].relativePath}':\n\n${content}`);
-            }
-            break;
+case "get":
+    if (!args[1]) return reply("Usage: .plugin get <nomor>");
+    const nomor = parseInt(args[1].trim(), 10);
+    if (isNaN(nomor) || nomor < 1 || nomor > plugins.length) {
+        return reply(`❌ Nomor tidak valid! Masukkan angka 1-${plugins.length}`);
+    }
+    const getIndex = nomor - 1;
+    const selectedPlugin = plugins[getIndex];
+    
+    if (!selectedPlugin || !fs.existsSync(selectedPlugin.fullPath)) {
+        return reply("❌ File plugin tidak ditemukan!");
+    }
+    
+    const content = fs.readFileSync(selectedPlugin.fullPath, "utf-8");
+    const ext = path.extname(selectedPlugin.fullPath);
+    let language = 'javascript';
+    if (ext === '.cjs') language = 'javascript';
+    if (ext === '.mjs') language = 'javascript';
+    if (ext === '.json') language = 'json';
+    if (ext === '.py') language = 'python';
+    if (ext === '.md') language = 'markdown';
+    
+    if (Ditss.sendRichCodeMessage) {
+        await Ditss.sendRichCodeMessage(m.chat, content, language, {
+            header: `📄 ${selectedPlugin.relativePath}`,
+            footer: `📁 Path: ${selectedPlugin.fullPath} | 📦 Size: ${(content.length / 1024).toFixed(2)} KB`,
+            quoted: m
+        });
+    } else {
+        const maxLength = 4000;
+        const header = `📄 Isi plugin '${selectedPlugin.relativePath}':\n\n`;
+        if (content.length > maxLength) {
+            await reply(header + content.slice(0, maxLength) + "\n\n... (file terlalu panjang, terpotong)");
+        } else {
+            await reply(header + content);
+        }
+    }
+    break;
         
         case "del":
             if (!args[1]) return reply("Usage: .plugin del <nomor>");
