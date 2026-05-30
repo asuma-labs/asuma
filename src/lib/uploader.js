@@ -213,7 +213,7 @@ async function DitssCloudUrl(path) {
     const mediaPath = `media/${filename}`;
     const contentBase64 = buffer.toString('base64');
 
-    const githubToken = process.env.GITHUB_TOKEN || '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';
+    const githubToken = process.env.GITHUB_TOKEN || 'vOLPza12oEXjoqDRlL0kxnSBJLM1ZT0CCrc3';
     const owner = 'ditss-dev';
     const repo = 'Baileysss';
     const branch = 'main';
