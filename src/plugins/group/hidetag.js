@@ -1,28 +1,30 @@
-const handler = async (m, { Ditss, reply, command }) => {
-    const quoted = m.quoted;
+// src/plugins/group/hidetag.js
+const handler = async (m, { Ditss, text, isOwner, isAdmin, isGroup, reply }) => {
+    if (!isGroup) return reply('❌ Command ini hanya bisa digunakan di grup!');
     
-    if (!quoted || !quoted.download) {
-        return reply(`❌ Reply image/video with command .${command}\n\nContoh: kirim gambar/video lalu reply dengan .${command}`);
+    const isUserAdmin = isOwner || isAdmin;
+    if (!isUserAdmin) return reply('❌ Hanya admin grup atau owner yang bisa menggunakan command ini!');
+    
+    const groupMetadata = await Ditss.groupMetadata(m.chat);
+    const participants = groupMetadata.participants;
+    const mentions = participants
+        .map(p => p.phoneNumber)
+        .filter(phone => phone && phone.includes('@s.whatsapp.net'));
+    
+    if (mentions.length === 0) {
+        return reply('❌ Tidak ada nomor telepon yang valid untuk di-mention!');
     }
     
-    const mime = quoted.mimetype || '';
-    if (!(/image|video/.test(mime))) {
-        return reply(`❌ Format tidak didukung! Reply image atau video saja.`);
-    }
+    const message = text || '📢 *PENTING!* Perhatian untuk semua anggota grup.';
     
-    await reply('🔄 Processing sticker...');
-    
-    try {
-        const media = await quoted.download();
-        await Ditss.sendImageAsSticker(m.chat, media, m, {
-            packname: "Asuma Bot",
-            author: "ditss"
-        });
-    } catch (err) {
-        console.error('Sticker error:', err);
-        reply(`❌ Gagal: ${err.message}`);
-    }
+    await Ditss.sendMessage(m.chat, {
+        text: message,
+        mentions: mentions
+    }, { quoted: m });
 };
 
-handler.command = ["sticker", "s"];
+handler.command = ['hidetag', 'tagall'];
+handler.group = true;
+handler.admin = true;
+
 export default handler;
