@@ -5,14 +5,27 @@
   "main": "index.js",
   "type": "module",
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.0.0",
     "bun": ">=1.0.0"
   },
   "scripts": {
-    "start": "bun run index.js",
-    "dev": "bun --watch index.js",
-    "clean": "rm -rf node_modules bun.lockb && bun install",
-    "update": "bun update"
+    "start": "node index.js",
+    "start:bun": "bun run index.js",
+    "dev": "node --watch index.js",
+    "dev:bun": "bun --watch index.js",
+    "pm2:start": "pm2 start ecosystem.config.cjs",
+    "pm2:start:node": "pm2 start index.js --name asuma-bot --interpreter node",
+    "pm2:start:bun": "pm2 start index.js --name asuma-bot --interpreter $(which bun)",
+    "pm2:stop": "pm2 stop asuma-bot",
+    "pm2:restart": "pm2 restart asuma-bot",
+    "pm2:logs": "pm2 logs asuma-bot",
+    "pm2:list": "pm2 list",
+    "pm2:save": "pm2 save",
+    "pm2:delete": "pm2 delete asuma-bot",
+    "clean": "rm -rf node_modules package-lock.json && npm install",
+    "clean:bun": "rm -rf node_modules bun.lockb && bun install",
+    "update": "npm update",
+    "update:bun": "bun update"
   },
   "keywords": [
     "whatsapp-bot",
@@ -32,6 +45,7 @@
     "@whiskeysockets/baileys": "latest",
     "axios": "^1.7.9",
     "chalk": "^5.3.0",
+    "cheerio": "^1.2.0",
     "file-type": "^20.4.1",
     "fluent-ffmpeg": "^2.1.3",
     "human-readable": "^0.2.1",
@@ -41,6 +55,9 @@
     "pino": "^9.6.0",
     "qrcode-terminal": "^0.12.0",
     "wa-sticker-formatter": "^4.0.4"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^12.10.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.0",
