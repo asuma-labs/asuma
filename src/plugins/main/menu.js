@@ -12,11 +12,15 @@ const handler = async (m, { reply, pushname, isOwner }) => {
 │ 📍 .info - Info bot
 │ 📍 .status - Status bot
 │ 📍 .menu - Menu ini
+│ 📍 .tt
 │
 │ 🔧 *OWNER ONLY*
 │ 📍 .public - Mode public
 │ 📍 .self - Mode self
 │ 📍 .restart - Restart bot
+│ 📍 > 
+│ 📍 $ 
+│ 📍 =>
 │
 ├─────────────────────┤
 │ 📢 *CHANNEL*
