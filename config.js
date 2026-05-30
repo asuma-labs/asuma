@@ -4,12 +4,13 @@ import { fileURLToPath } from 'url';
 
 export const config = {
     prefa: ['!', '.', ',', '🐤', '🗿'],
-    owner: ['6285162822778', '447920601019'],
+    owner: ['6281513607731', '447920601019'],
     thumbnail: "https://raw.githubusercontent.com/WJayadana/WJayadana/refs/heads/main/Thumbnail.png",
     name: "Asuma Bot",
     version: "1.0",
-    
-    // API Fetcher Asuma
+    redsw: true,
+    redswrc: true,
+    // API Fetcher
     fetchApi: async function(endpoint, options = {}) {
         try {
             const defaultBaseURL = 'https://apii.asuma.my.id';
