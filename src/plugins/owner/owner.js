@@ -1,38 +1,76 @@
-import { exec } from 'child_process'
-import util from 'util'
+// src/plugins/owner/owner.js
+import { exec } from 'child_process';
+import util from 'util';
+import fs from 'fs';
+import path from 'path';
 
-const handler = async (m, { Ditss, text, isOwn, command, reply }) => {
-    if (!isOwn) return reply('Owner-only command!')
+const handler = async (m, { Ditss, text, isOwner, command, reply }) => {
+    if (!isOwner) return reply('❌ Owner only!');
     
     switch (command) {
         case 'restart': {
-            await reply('Restarting bot...')
-            process.exit()
+            await reply('🔄 Restarting bot...');
+            setTimeout(() => {
+                process.exit(0);
+            }, 2000);
         }
         break;
         
         case 'setpref': {
-            if (!text) return reply('Masukkan prefix baru!')
-            // Note: This only changes locally until actual config write logic is added
-            const { config } = (await import('../../../config.js')).default
-            config.prefa = [text]
-            reply(`✅ Prefix berhasil diubah ke: ${text}`)
+            if (!text) return reply('❌ Masukkan prefix baru!\nContoh: .setpref !');
+            
+            try {
+                const configPath = path.join(process.cwd(), 'config.js');
+                let configContent = fs.readFileSync(configPath, 'utf-8');
+                
+                const newPrefix = text.split(' ')[0];
+                configContent = configContent.replace(
+                    /prefa: \[[^\]]*\]/,
+                    `prefa: ['${newPrefix}']`
+                );
+                
+                fs.writeFileSync(configPath, configContent);
+                reply(`✅ Prefix berhasil diubah ke: ${newPrefix}\n📌 Restart bot agar perubahan berlaku.`);
+            } catch (err) {
+                reply(`❌ Gagal mengubah prefix: ${err.message}`);
+            }
         }
         break;
         
         case 'bc':
         case 'broadcast': {
-            if (!text) return reply('Teks mana?')
-            let chats = Object.keys(await Ditss.groupFetchAllParticipating())
-            reply(`Mengirim broadcast ke ${chats.length} grup...`)
-            for (let i of chats) {
-                await Ditss.sendMessage(i, { text: `📢 *BROADCAST OWNER*\n\n${text}` })
+            if (!text) return reply('❌ Teks broadcast-nya mana?');
+            
+            await reply(`📢 Mengirim broadcast ke semua grup...`);
+            
+            try {
+                const groups = await Ditss.groupFetchAllParticipating();
+                const groupList = Object.values(groups);
+                let success = 0;
+                let failed = 0;
+                
+                for (let group of groupList) {
+                    try {
+                        await Ditss.sendMessage(group.id, { 
+                            text: `📢 *BROADCAST FROM OWNER*\n\n${text}\n\n_⚠️ This is an automated broadcast message_'`
+                        });
+                        success++;
+                    } catch {
+                        failed++;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+                }
+                
+                reply(`✅ Broadcast selesai!\n📨 Terkirim: ${success} grup\n❌ Gagal: ${failed} grup`);
+            } catch (err) {
+                reply(`❌ Gagal broadcast: ${err.message}`);
             }
-            reply('✅ Selesai broadcast.')
         }
         break;
     }
-}
+};
 
-handler.command = ["restart", "setpref", "bc", "broadcast"]
-export default handler
+handler.command = ["restart", "setpref", "bc", "broadcast"];
+handler.owner = true;
+
+export default handler;
